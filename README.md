@@ -1,10 +1,3 @@
-# {{ projectName }}
+# {{ FbContacts }}
 
-A web app built using polymer.dart.
-
-## Creating new elements
-
-The `polymer` package includes a utility to generate new elements. From
-within this project, run:
-
-`pub run polymer:new_element <name>`
+A web-based contact manager with a Firebase back-end written in Dart.
