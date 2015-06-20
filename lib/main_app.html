@@ -1,0 +1,32 @@
+<!--
+  Copyright (c) 2015, Carl J. Mosca. All rights reserved. Use of this source code
+  is governed by a BSD-style license that can be found in the LICENSE file.
+-->
+
+<!-- import polymer-element's definition -->
+<link rel="import" href="../../packages/polymer/polymer.html">
+
+<link rel="import" href="../../packages/paper_elements/paper_input.html">
+
+<polymer-element name="main-app">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+
+    <paper-input label="Company" value="{{contactData['company']}}"></paper-input>
+    <paper-input label="First Name" value="{{contactData['firstName']}}"></paper-input>
+    <paper-input label="Last Name" value="{{contactData['lastName']}}"></paper-input>
+    <p></p>
+    <paper-input label="Address"  value="{{contactData['address1']}}"></paper-input>
+    <paper-input label="Address 2"  value="{{contactData['address2']}}"></paper-input>
+    <p>
+      <paper-button raised="Save" on-click="{{postContact}}">Save</paper-button>
+    </p>
+
+
+  </template>
+  <script type="application/dart" src="main_app.dart"></script>
+</polymer-element>
