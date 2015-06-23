@@ -29,14 +29,16 @@ class MainApp extends PolymerElement {
     'email': '',
     'mobile': ''    
   });
+  ObservableList<Contact> contacts = toObservable(new List<Contact>());
 
   /// Constructor used to create instance of MainApp.
   MainApp.created() : super.created();
 
   Firebase firebase;
+  //PaperToast contentToast;
   PaperToast saveToast;
 
-  void selectTab(html.Event e, var detail, html.Element target) {
+  void selectPage(html.Event e, var detail, html.Element target) {
    
     if (!authenticated) {
       return;
@@ -141,9 +143,42 @@ class MainApp extends PolymerElement {
   ready() {
     super.ready();
     saveToast = shadowRoot.querySelector('#save-toast');
+    //contentToast = shadowRoot.querySelector('#content-toast');
     firebase = new Firebase(FB_BASE_ADDRESS);
     firebase.authWithOAuthPopup('google').then((_) {        
-      authenticated = true;   
+      authenticated = true;
+      showMessage("Authenticated");
     });
+    contacts.add(new Contact("ABC Company", "Carl", "Mosca",
+        "123 Main Street", "Box 12", "Henrico", "VA", "23233", "123-456-7890", "here@there.com", "999-888-0101"));
   }
+}
+
+class Contact extends Observable {
+  @observable
+  String company;
+  @observable
+  String firstName;
+  @observable
+  String lastName;
+  @observable
+  String address1;
+  @observable
+  String address2;
+  @observable
+  String city;
+  @observable
+  String state;
+  @observable
+  String zip;
+  @observable
+  String telephone;
+  @observable
+  String email;
+  @observable
+  String mobile;
+  
+  Contact(this.company, this.firstName, this.lastName,
+      this.address1, this.address2, this.city, this.state, this.zip, this.telephone,
+      this.email, this.mobile);
 }

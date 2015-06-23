@@ -9,12 +9,11 @@
 <link rel="import" href="../../packages/paper_elements/paper_input.html">
 <link rel="import" href="../../packages/paper_elements/paper_button.html">
 <link rel="import" href="../../packages/core_elements/core_toolbar.html">
-<link rel="import" href="../../packages/paper_elements/paper_tabs.html">
-<link rel="import" href="../../packages/paper_elements/paper_tab.html">
 <link rel="import" href="../../packages/core_elements/core_scaffold.html">
 <link rel="import" href="../../packages/core_elements/core_header_panel.html">
 <link rel="import" href="../../packages/core_elements/core_menu.html">
 <link rel="import" href="../../packages/core_elements/core_pages.html">
+<link rel="import" href="../../packages/core_elements/core_list_dart.html">
 <link rel="import" href="../../packages/core_elements/core_item.html">
 <link rel="import" href="../../packages/paper_elements/paper_toast.html">
 
@@ -35,8 +34,8 @@
         <span>Menu</span>
       </core-toolbar>
       <core-menu id="mnu-main">
-        <core-item label="List" on-click="{{selectTab}}" id="btn-list"></core-item>
-        <core-item label="Edit" on-click="{{selectTab}}" id="btn-edit"></core-item>
+        <core-item label="List" on-click="{{selectPage}}" id="btn-list"></core-item>
+        <core-item label="Edit" on-click="{{selectPage}}" id="btn-edit"></core-item>
       </core-menu>
     </core-header-panel>
 
@@ -44,7 +43,11 @@
 
     <div class="content">
       <core-pages selected="{{selected}}">
-          <div>Contacts</div>
+          <div>
+            <template repeat="{{c in contacts}}">
+              <p>{{c.company}} {{c.firstName}} {{c.lastName}}</p>
+            </template>
+          </div>
           <div>
               <paper-input label="Company" value="{{contactData['company']}}"></paper-input>
               <paper-input label="First Name" value="{{contactData['firstName']}}"></paper-input>
@@ -62,9 +65,8 @@
               <paper-input id="zip" label="Zip" value="{{contactData['zip']}}" 
                 validate="^[0-9]*$" error="Input is not a number!" required></paper-input>
               <p>
-                  <paper-button raised on-click="{{postContact}}">
-                      Save</paper-button>
-                  <paper-toast id="save-toast" text=""></paper-toast>
+                <paper-button raised on-click="{{postContact}}">Save</paper-button>
+                <paper-toast id="save-toast" text=""></paper-toast>
           </div>
           <div>Page 3</div>
       </core-pages>
