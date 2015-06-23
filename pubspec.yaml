@@ -1,8 +1,8 @@
 name: 'firebaseDemo'
 version: 0.0.1
 description: A web app built using polymer.dart.
-#author: <your name> <email@example.com>
-#homepage: https://www.example.com
+#author: Carl J. Mosca <carljmosca@gmail.com>
+#homepage: https://stillhacking.blogspot.com
 environment:
   sdk: '>=1.0.0 <2.0.0'
 dependencies:
@@ -10,6 +10,8 @@ dependencies:
   paper_elements: '>=0.7.0 <0.8.0'
   polymer: '>=0.16.0 <0.17.0'
   firebase: "^0.5.1"
+  core_elements: 
+  message:   
 transformers:
 - polymer:
     entry_points: web/index.html
