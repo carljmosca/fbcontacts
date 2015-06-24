@@ -7,6 +7,7 @@ import 'package:polymer/polymer.dart';
 import 'package:firebase/firebase.dart';
 import 'package:paper_elements/paper_input.dart';
 import 'package:core_elements/core_item.dart';
+import 'package:core_elements/core_list_dart.dart';
 import 'package:paper_elements/paper_toast.dart';
 
 const FB_BASE_ADDRESS = "https://stillhacking.firebaseio.com";
@@ -15,7 +16,7 @@ const FB_BASE_ADDRESS = "https://stillhacking.firebaseio.com";
 @CustomTag('main-app')
 class MainApp extends PolymerElement {
   @observable bool authenticated = false;
-  @observable int selected = 0;
+  @observable int selectedPage = 0;
   @observable Map contactData = toObservable({
     'company': '',
     'firstName': '',
@@ -29,25 +30,31 @@ class MainApp extends PolymerElement {
     'email': '',
     'mobile': ''    
   });
-  ObservableList<Contact> contacts = toObservable(new List<Contact>());
+  
+  @observable bool multi = false;
+  @observable bool selectionEnabled = true;
+  @observable ObservableList data;
+  @observable var selection;
+  int addIndex = 0;
 
   /// Constructor used to create instance of MainApp.
   MainApp.created() : super.created();
-
+  
   Firebase firebase;
-  //PaperToast contentToast;
   PaperToast saveToast;
+  CoreList coreListDart;
 
   void selectPage(html.Event e, var detail, html.Element target) {
    
     if (!authenticated) {
       return;
     }
+    addRecord();
     CoreItem btn = target;
     if (btn.id == "btn-edit") {
-      selected = 1;
+      selectedPage = 1;
     } else {
-      selected = 0;
+      selectedPage = 0;
     }
 
   }
@@ -103,7 +110,7 @@ class MainApp extends PolymerElement {
   
   void loadContacts() {
     
-    Firebase getRef = firebase.child("contacts");
+    //Firebase getRef = firebase.child("contacts");
     //getRef.on
     //firebase.onV onValue(processValue);
    
@@ -140,45 +147,57 @@ class MainApp extends PolymerElement {
 
   /// Called when main-app has been fully prepared (Shadow DOM created,
   /// property observers set up, event listeners attached).
+  @override
   ready() {
     super.ready();
+    data = new ObservableList();
     saveToast = shadowRoot.querySelector('#save-toast');
-    //contentToast = shadowRoot.querySelector('#content-toast');
+    coreListDart = shadowRoot.querySelector('#list');
     firebase = new Firebase(FB_BASE_ADDRESS);
     firebase.authWithOAuthPopup('google').then((_) {        
       authenticated = true;
       showMessage("Authenticated");
     });
-    contacts.add(new Contact("ABC Company", "Carl", "Mosca",
-        "123 Main Street", "Box 12", "Henrico", "VA", "23233", "123-456-7890", "here@there.com", "999-888-0101"));
+    addRecord();
+    addRecord();
   }
+  
+  void addRecord() {
+    if (data == null) {
+      return;
+    }
+//    Contact contact = new Contact(addIndex, "ABC Company", "Carl", "Mosca",
+//        "123 Main Street", "Box 12", "Henrico", "VA", "23233", "123-456-7890", "here@there.com", "999-888-0101");
+    data.insert(addIndex, new Contact(addIndex, "ABC Company", "Carl", "Mosca",
+        "123 Main Street", "Box 12", "Henrico", "VA", "23233", "123-456-7890", "here@there.com", "999-888-0101", 0, 0, addIndex));  
+    addIndex = addIndex + 1;
+  }
+  
 }
 
 class Contact extends Observable {
-  @observable
-  String company;
-  @observable
-  String firstName;
-  @observable
-  String lastName;
-  @observable
-  String address1;
-  @observable
-  String address2;
-  @observable
-  String city;
-  @observable
-  String state;
-  @observable
-  String zip;
-  @observable
-  String telephone;
-  @observable
-  String email;
-  @observable
-  String mobile;
+  final int id;
+  @observable String company;
+  @observable String firstName;
+  @observable String lastName;
+  @observable String address1;
+  @observable String address2;
+  @observable String city;
+  @observable String state;
+  @observable String zip;
+  @observable String telephone;
+  @observable String email;
+  @observable String mobile;
+  @observable int value;
+  @observable int type;
+  @observable bool checked;
+  @observable int index;
   
-  Contact(this.company, this.firstName, this.lastName,
+  Contact(this.id, this.company, this.firstName, this.lastName,
       this.address1, this.address2, this.city, this.state, this.zip, this.telephone,
-      this.email, this.mobile);
+      this.email, this.mobile, this.type, this.value, this.index) {
+
+  }
 }
+
+main() => initPolymer();

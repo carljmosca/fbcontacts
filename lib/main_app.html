@@ -24,8 +24,58 @@
       :host {
         display: block;
       }
-    </style>
+    .item {
+      box-sizing: border-box;
+      height: 80px;
+      border-bottom: 1px solid #ddd;
+      padding: 4px;
+      cursor: default;
+      background-color: white;
+      overflow: hidden;
+    }
 
+    .selected {
+      background: silver;
+    }
+
+    .message {
+      padding-left: 77px;
+      line-height: 167%;
+      background-repeat: no-repeat;
+      background-position: 10px 10px;
+      background-size: 60px;
+    }
+
+    .from {
+      display: inline;
+      font-weight: bold;
+    }
+
+    .timestamp {
+      margin-left: 10px;
+      font-size: 12px;
+      opacity: 0.8;
+    }
+
+    .body {
+      font-size: 12px;
+    }
+
+    .spaced {
+      margin: 10px;
+    }
+
+    .selection-display {
+      background: lightgray;
+      padding: 0 5px;
+      margin: 0 5px;
+    }
+
+    .narrow {
+      width: 40px;
+    }
+
+  </style>
 
   <core-scaffold>
 
@@ -42,11 +92,19 @@
     <span tool>Contacts</span>
 
     <div class="content">
-      <core-pages selected="{{selected}}">
+      <core-pages selected="{{selectedPage}}">
           <div>
-            <template repeat="{{c in contacts}}">
-              <p>{{c.company}} {{c.firstName}} {{c.lastName}}</p>
-            </template>
+            <core-list-dart id="list" data="{{data}}" selectionEnabled="true" flex multi?={{multi}}
+                selection="{{selection}}" height="80" style="height: 800px">
+              <template>
+                <div class="{{ {item: true, selected: selected} }}">
+                  <div class="message" >
+                     <span class="from">{{model.firstName}} {{model.lastName}}</span>
+                     <div class="subject">Row: {{index}}, Record ID: {{model.id}}</div>
+                  </div>
+                </div>
+              </template>
+            </core-list-dart>
           </div>
           <div>
               <paper-input label="Company" value="{{contactData['company']}}"></paper-input>
@@ -68,10 +126,9 @@
                 <paper-button raised on-click="{{postContact}}">Save</paper-button>
                 <paper-toast id="save-toast" text=""></paper-toast>
           </div>
-          <div>Page 3</div>
       </core-pages>
-  </div>
-</core-scaffold>
+    </div>
+  </core-scaffold>
 
   </template>
   <script type="application/dart" src="main_app.dart"></script>
