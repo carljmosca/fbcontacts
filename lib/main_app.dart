@@ -110,9 +110,21 @@ class MainApp extends PolymerElement {
   
   void loadContacts() {
     
-    //Firebase getRef = firebase.child("contacts");
-    //getRef.on
-    //firebase.onV onValue(processValue);
+    if (!authenticated) {
+      return;
+    }
+    var items = [];
+    firebase.child("contacts").once("value").then((snapshot) {
+      snapshot.forEach((snapshot) {
+        items.add(snapshot.val());
+      });
+      for (var item in items) {
+        data.insert(addIndex, new Contact(addIndex, item['company'], item['firstName'], item['lastName'],
+            item['address1'], item['address2'], item['city'], item['state'], item['zip'],
+            item['telephone'], item['email'], item['mobile'], 0, 0, addIndex++));
+      }
+    });
+
    
   }
   
@@ -154,23 +166,16 @@ class MainApp extends PolymerElement {
     saveToast = shadowRoot.querySelector('#save-toast');
     coreListDart = shadowRoot.querySelector('#list');
     firebase = new Firebase(FB_BASE_ADDRESS);
-    firebase.authWithOAuthPopup('google').then((_) {        
-      authenticated = true;
-      showMessage("Authenticated");
+    firebase.authWithOAuthPopup('google').then((_) {    
+      afterAuthentication();
     });
-    addRecord();
-    addRecord();
+
   }
   
-  void addRecord() {
-    if (data == null) {
-      return;
-    }
-//    Contact contact = new Contact(addIndex, "ABC Company", "Carl", "Mosca",
-//        "123 Main Street", "Box 12", "Henrico", "VA", "23233", "123-456-7890", "here@there.com", "999-888-0101");
-    data.insert(addIndex, new Contact(addIndex, "ABC Company", "Carl", "Mosca",
-        "123 Main Street", "Box 12", "Henrico", "VA", "23233", "123-456-7890", "here@there.com", "999-888-0101", 0, 0, addIndex));  
-    addIndex = addIndex + 1;
+  void afterAuthentication() {
+    authenticated = true;
+    showMessage("Authenticated");
+    loadContacts();    
   }
   
 }
