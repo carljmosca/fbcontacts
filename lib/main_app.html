@@ -26,7 +26,7 @@
       }
     .item {
       box-sizing: border-box;
-      height: 80px;
+      height: 160px;
       border-bottom: 1px solid #ddd;
       padding: 4px;
       cursor: default;
@@ -95,12 +95,16 @@
       <core-pages selected="{{selectedPage}}">
           <div>
             <core-list-dart id="list" data="{{data}}" selectionEnabled="true" flex multi?={{multi}}
-                selection="{{selection}}" height="80" style="height: 800px">
+                selection="{{selection}}" height="120" style="height: 800px">
               <template>
                 <div class="{{ {item: true, selected: selected} }}">
                   <div class="message" >
-                     <span class="from">{{model.firstName}} {{model.lastName}}</span>
-                     <div class="subject">Row: {{index}}, Record ID: {{model.id}}</div>
+                     <span class="from">{{model.company}} {{model.firstName}} {{model.lastName}}</span>
+                     <span class="body">
+                      <p>{{model.email}} {{model.telephone}}  {{model.mobile}}</p>
+                      <p>{{model.address1}} {{model.address2}}</p>
+                      <p>{{model.city}} {{model.state}}  {{model.zip}}</p>
+                     </span>
                   </div>
                 </div>
               </template>
