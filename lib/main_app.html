@@ -84,8 +84,8 @@
         <span>Menu</span>
       </core-toolbar>
       <core-menu id="mnu-main">
-        <core-item label="List" on-click="{{selectPage}}" id="btn-list"></core-item>
-        <core-item label="Edit" on-click="{{selectPage}}" id="btn-edit"></core-item>
+        <core-item label="List" on-click="{{selectPage}}" id="btn-list-menu"></core-item>
+        <core-item label="Edit" on-click="{{selectPage}}" id="btn-edit-menu"></core-item>
       </core-menu>
     </core-header-panel>
 
@@ -94,6 +94,11 @@
     <div class="content">
       <core-pages selected="{{selectedPage}}">
           <div>
+            <p>
+              <paper-button id="btn-edit" raised on-click="{{editContact}}">Edit</paper-button>
+              <paper-button id="btn-delete" raised on-click="{{deleteContact}}">Delete</paper-button>
+              <paper-toast id="list-toast" text=""></paper-toast>
+            </p>
             <core-list-dart id="list" data="{{data}}" selectionEnabled="true" flex multi?={{multi}}
                 selection="{{selection}}" height="120" style="height: 800px">
               <template>

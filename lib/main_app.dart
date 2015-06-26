@@ -6,9 +6,11 @@ import 'dart:html' as html;
 import 'package:polymer/polymer.dart';
 import 'package:firebase/firebase.dart';
 import 'package:paper_elements/paper_input.dart';
+import 'package:paper_elements/paper_button.dart';
 import 'package:core_elements/core_item.dart';
 import 'package:core_elements/core_list_dart.dart';
 import 'package:paper_elements/paper_toast.dart';
+import 'package:observe/observe.dart';
 
 const FB_BASE_ADDRESS = "https://stillhacking.firebaseio.com";
 
@@ -43,15 +45,16 @@ class MainApp extends PolymerElement {
   Firebase firebase;
   PaperToast saveToast;
   CoreList coreListDart;
+  PaperButton btnEdit;
+  PaperButton btnDelete;
 
   void selectPage(html.Event e, var detail, html.Element target) {
    
     if (!authenticated) {
       return;
     }
-    addRecord();
     CoreItem btn = target;
-    if (btn.id == "btn-edit") {
+    if (btn.id == "btn-edit-menu") {
       selectedPage = 1;
     } else {
       selectedPage = 0;
@@ -60,8 +63,6 @@ class MainApp extends PolymerElement {
   }
 
   void inputHandler(html.Event e) {
-      //PaperInput paperInput = (e.target as PaperInput);
-      //paperInput.
       var inp = ($['zip'] as PaperInput);
       // very simple check - you can check what you want of courxe
       if(inp.value.length < 5) {
@@ -71,8 +72,23 @@ class MainApp extends PolymerElement {
         // empty message text is interpreted as valid input
         inp.jsElement.callMethod('setCustomValidity', [""]);
       }
-    }
+  }
   
+  void editContact() {
+    
+  }
+  
+  void deleteContact(html.Event e, var detail, html.Element target) {
+    
+    if (selection == null) {
+      return;
+    }
+    Contact c = selection as Contact;
+    Firebase postRef = firebase.child("contacts/" + c.key);
+    postRef.remove().then((onValue) {
+      data.removeAt(c.index);      
+    });
+  }
     
   void postContact(html.Event e, var detail, html.Element target) {
     
@@ -113,16 +129,15 @@ class MainApp extends PolymerElement {
     if (!authenticated) {
       return;
     }
-    var items = [];
     firebase.child("contacts").once("value").then((snapshot) {
       snapshot.forEach((snapshot) {
-        items.add(snapshot.val());
+        data.insert(addIndex, new Contact(snapshot.key, snapshot.val()['company'], 
+            snapshot.val()['firstName'], snapshot.val()['lastName'],
+            snapshot.val()['address1'], snapshot.val()['address2'], 
+            snapshot.val()['city'], snapshot.val()['state'], snapshot.val()['zip'],
+            snapshot.val()['telephone'], snapshot.val()['email'], snapshot.val()['mobile'], 
+            addIndex++));
       });
-      for (var item in items) {
-        data.insert(addIndex, new Contact(addIndex, item['company'], item['firstName'], item['lastName'],
-            item['address1'], item['address2'], item['city'], item['state'], item['zip'],
-            item['telephone'], item['email'], item['mobile'], 0, 0, addIndex++));
-      }
     });
 
    
@@ -163,13 +178,25 @@ class MainApp extends PolymerElement {
   ready() {
     super.ready();
     data = new ObservableList();
+    btnEdit = shadowRoot.querySelector("#btn-edit");
+    //btnEdit.disabled = true;
+    btnDelete = shadowRoot.querySelector("#btn-delete");
+    //btnDelete.disabled = true;
     saveToast = shadowRoot.querySelector('#save-toast');
     coreListDart = shadowRoot.querySelector('#list');
+    coreListDart.onSelectStart.listen((e) {
+      resetListButtons();
+    });
     firebase = new Firebase(FB_BASE_ADDRESS);
     firebase.authWithOAuthPopup('google').then((_) {    
       afterAuthentication();
-    });
+    });    
 
+  }
+  
+  void resetListButtons() {
+    btnEdit.disabled = (selection == null);  
+    btnDelete.disabled = (selection == null);
   }
   
   void afterAuthentication() {
@@ -181,7 +208,7 @@ class MainApp extends PolymerElement {
 }
 
 class Contact extends Observable {
-  final int id;
+  @observable String key;
   @observable String company;
   @observable String firstName;
   @observable String lastName;
@@ -193,14 +220,12 @@ class Contact extends Observable {
   @observable String telephone;
   @observable String email;
   @observable String mobile;
-  @observable int value;
-  @observable int type;
   @observable bool checked;
   @observable int index;
   
-  Contact(this.id, this.company, this.firstName, this.lastName,
+  Contact(this.key, this.company, this.firstName, this.lastName,
       this.address1, this.address2, this.city, this.state, this.zip, this.telephone,
-      this.email, this.mobile, this.type, this.value, this.index) {
+      this.email, this.mobile, this.index) {
 
   }
 }
