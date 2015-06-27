@@ -95,6 +95,8 @@ class MainApp extends PolymerElement {
     Firebase postRef = firebase.child("contacts/" + c.key);
     postRef.remove().then((onValue) {
       data.removeAt(c.index);      
+    }).catchError((error) {
+      showMessage("Error deleting contact: " + error.toString());  
     });
   }
     
@@ -117,14 +119,15 @@ class MainApp extends PolymerElement {
       'telephone': contactData.telephone,
       'email': contactData.email, 
       'mobile': contactData.mobile
-      };
+    };
     
     Firebase saveRef;
     if (contactData.key != null && !contactData.key.isEmpty) {
       saveRef = firebase.child("contacts/" + contactData.key);
-      saveRef.update(saveData).then((value) {
+      saveRef.update(contactData.toJSON()).then((value) {
         showMessage("Contact was updated");  
       }).catchError((error) {
+        showMessage("Error saving contact: " + error.toString());
       });
     } else {
       saveRef = firebase.child("contacts");
@@ -254,17 +257,28 @@ class Contact extends Observable {
   
   Map<String, dynamic> toJSON() {
     Map<String, dynamic> result = new Map<String, dynamic>();
-    result['company'] = company;
-    result['firstName'] = firstName;
-    result['lastName'] = lastName;
-    result['address1'] = address1;
-    result['address2'] = address2;
-    result['city'] = city;
-    result['state'] = state;
-    result['zip'] = zip;
-    result['email'] = email;
-    result['telephone'] = telephone;
-    result['mobile'] = mobile;
+    if (company != null)
+      result['company'] = company;
+    if (firstName != null)
+      result['firstName'] = firstName;
+    if (lastName != null)
+      result['lastName'] = lastName;
+    if (address1 != null)
+      result['address1'] = address1;
+    if (address2 != null)
+      result['address2'] = address2;
+    if (city != null)
+      result['city'] = city;
+    if (state != null)
+      result['state'] = state;
+    if (zip != null)
+      result['zip'] = zip;
+    if (email != null)
+      result['email'] = email;
+    if (telephone != null)
+      result['telephone'] = telephone;
+    if (mobile != null)
+      result['mobile'] = mobile;
     return result;
   }
 }
