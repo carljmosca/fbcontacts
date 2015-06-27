@@ -13,6 +13,8 @@ import 'package:paper_elements/paper_toast.dart';
 import 'package:observe/observe.dart';
 
 const FB_BASE_ADDRESS = "https://stillhacking.firebaseio.com";
+const PAGE_LIST = 0;
+const PAGE_EDIT = 1;
 
 /// A Polymer `<main-app>` element.
 @CustomTag('main-app')
@@ -38,6 +40,7 @@ class MainApp extends PolymerElement {
   @observable ObservableList data;
   @observable var selection;
   int addIndex = 0;
+  String uid;
 
   /// Constructor used to create instance of MainApp.
   MainApp.created() : super.created();
@@ -55,9 +58,9 @@ class MainApp extends PolymerElement {
     }
     CoreItem btn = target;
     if (btn.id == "btn-edit-menu") {
-      selectedPage = 1;
+      selectedPage = PAGE_EDIT;
     } else {
-      selectedPage = 0;
+      selectedPage = PAGE_LIST;
     }
 
   }
@@ -75,7 +78,18 @@ class MainApp extends PolymerElement {
   }
   
   void editContact() {
-    
+    if (selection == null) {
+      return;
+    }
+    Contact c = selection as Contact;
+    contactData['company'] = c.company;
+    contactData['firstName'] = c.firstName;
+    contactData['lastName'] = c.lastName;
+    selectedPage = PAGE_EDIT;
+    //Firebase postRef = firebase.child("contacts/" + c.key);
+    //postRef.update(c.toJSON()).then((onValue) {
+      //data.removeAt(c.index);      
+    //});
   }
   
   void deleteContact(html.Event e, var detail, html.Element target) {
@@ -188,11 +202,12 @@ class MainApp extends PolymerElement {
       resetListButtons();
     });
     firebase = new Firebase(FB_BASE_ADDRESS);
-    firebase.authWithOAuthPopup('google').then((_) {    
+    firebase.authWithOAuthPopup('google').then((authResponse) {  
+      uid = authResponse['auth']['uid'];
       afterAuthentication();
     });    
 
-  }
+  }  
   
   void resetListButtons() {
     btnEdit.disabled = (selection == null);  
@@ -227,6 +242,14 @@ class Contact extends Observable {
       this.address1, this.address2, this.city, this.state, this.zip, this.telephone,
       this.email, this.mobile, this.index) {
 
+  }
+  
+  Map<String, dynamic> toJSON() {
+    Map<String, dynamic> result = new Map<String, dynamic>();
+    result['company'] = company;
+    result['firstName'] = firstName;
+    result['lastName'] = lastName;
+    return result;
   }
 }
 
