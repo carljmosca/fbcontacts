@@ -85,7 +85,7 @@
       </core-toolbar>
       <core-menu id="mnu-main">
         <core-item label="List" on-click="{{selectPage}}" id="btn-list-menu"></core-item>
-        <core-item label="Edit" on-click="{{selectPage}}" id="btn-edit-menu"></core-item>
+        <core-item label="Details" on-click="{{selectPage}}" id="btn-details-menu"></core-item>
       </core-menu>
     </core-header-panel>
 
@@ -116,23 +116,23 @@
             </core-list-dart>
           </div>
           <div>
-              <paper-input label="Company" value="{{contactData['company']}}"></paper-input>
-              <paper-input label="First Name" value="{{contactData['firstName']}}"></paper-input>
-              <paper-input label="Last Name" value="{{contactData['lastName']}}"></paper-input>
+              <paper-input label="Company" value="{{contactData.company}}"></paper-input>
+              <paper-input label="First Name" value="{{contactData.firstName}}"></paper-input>
+              <paper-input label="Last Name" value="{{contactData.lastName}}"></paper-input>
               <p></p>
-              <paper-input label="Email" type="email" on-input="{{inputHandler}}" value="{{contactData['email']}}"></paper-input>
-              <paper-input label="Phone"  value="{{contactData['telephone']}}"></paper-input>
-              <paper-input label="Mobile"  value="{{contactData['mobile']}}"></paper-input>
+              <paper-input label="Email" type="email" on-input="{{inputHandler}}" value="{{contactData.email}}"></paper-input>
+              <paper-input label="Phone"  value="{{contactData.telephone}}"></paper-input>
+              <paper-input label="Mobile"  value="{{contactData.mobile}}"></paper-input>
               <p></p>
-              <paper-input label="Address"  value="{{contactData['address1']}}"></paper-input>
-              <paper-input label="Address 2"  value="{{contactData['address2']}}"></paper-input>
+              <paper-input label="Address"  value="{{contactData.address1}}"></paper-input>
+              <paper-input label="Address 2"  value="{{contactData.address2}}"></paper-input>
               <p></p>
-              <paper-input label="City"  value="{{contactData['city']}}"></paper-input>
-              <paper-input label="State"  value="{{contactData['state']}}"></paper-input>
-              <paper-input id="zip" label="Zip" value="{{contactData['zip']}}" 
+              <paper-input label="City"  value="{{contactData.city}}"></paper-input>
+              <paper-input label="State"  value="{{contactData.state}}"></paper-input>
+              <paper-input id="zip" label="Zip" value="{{contactData.zip}}" 
                 validate="^[0-9]*$" error="Input is not a number!" required></paper-input>
               <p>
-                <paper-button raised on-click="{{postContact}}">Save</paper-button>
+                <paper-button raised on-click="{{saveContact}}">Save</paper-button>
                 <paper-toast id="save-toast" text=""></paper-toast>
           </div>
       </core-pages>
