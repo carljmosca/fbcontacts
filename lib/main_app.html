@@ -7,6 +7,7 @@
 <link rel="import" href="../../packages/polymer/polymer.html">
 
 <link rel="import" href="../../packages/paper_elements/paper_input.html">
+<link rel="import" href="../../packages/paper_elements/paper_input_decorator.html">
 <link rel="import" href="../../packages/paper_elements/paper_button.html">
 <link rel="import" href="../../packages/core_elements/core_toolbar.html">
 <link rel="import" href="../../packages/core_elements/core_scaffold.html">
@@ -26,7 +27,7 @@
       }
     .item {
       box-sizing: border-box;
-      height: 160px;
+      height: 110px;
       border-bottom: 1px solid #ddd;
       padding: 4px;
       cursor: default;
@@ -40,7 +41,7 @@
 
     .message {
       padding-left: 77px;
-      line-height: 167%;
+      line-height: 100%;
       background-repeat: no-repeat;
       background-position: 10px 10px;
       background-size: 60px;
@@ -106,7 +107,7 @@
                   <div class="message" >
                      <span class="from">{{model.company}} {{model.firstName}} {{model.lastName}}</span>
                      <span class="body">
-                      <p>{{model.email}} {{model.telephone}}  {{model.mobile}}</p>
+                      <p>{{model.email}} {{model.telephone}}  {{model.mobile}}</p>                     
                       <p>{{model.address1}} {{model.address2}}</p>
                       <p>{{model.city}} {{model.state}}  {{model.zip}}</p>
                      </span>
@@ -120,7 +121,7 @@
               <paper-input label="First Name" value="{{contactData.firstName}}"></paper-input>
               <paper-input label="Last Name" value="{{contactData.lastName}}"></paper-input>
               <p></p>
-              <paper-input label="Email" type="email" on-input="{{inputHandler}}" value="{{contactData.email}}"></paper-input>
+              <paper-input label="Email" value="{{contactData.email}}"></paper-input>
               <paper-input label="Phone"  value="{{contactData.telephone}}"></paper-input>
               <paper-input label="Mobile"  value="{{contactData.mobile}}"></paper-input>
               <p></p>
@@ -129,8 +130,7 @@
               <p></p>
               <paper-input label="City"  value="{{contactData.city}}"></paper-input>
               <paper-input label="State"  value="{{contactData.state}}"></paper-input>
-              <paper-input id="zip" label="Zip" value="{{contactData.zip}}" 
-                validate="^[0-9]*$" error="Input is not a number!" required></paper-input>
+              <paper-input label="Zip" value="{{contactData.zip}}"></paper-input>
               <p>
                 <paper-button raised on-click="{{saveContact}}">Save</paper-button>
                 <paper-toast id="save-toast" text=""></paper-toast>

@@ -6,7 +6,9 @@ import 'dart:html' as html;
 import 'package:polymer/polymer.dart';
 import 'package:firebase/firebase.dart';
 import 'package:paper_elements/paper_input.dart';
+import 'package:paper_elements/paper_input_decorator.dart';
 import 'package:paper_elements/paper_button.dart';
+import 'package:core_elements/core_menu.dart';
 import 'package:core_elements/core_item.dart';
 import 'package:core_elements/core_list_dart.dart';
 import 'package:paper_elements/paper_toast.dart';
@@ -36,6 +38,7 @@ class MainApp extends PolymerElement {
   Firebase firebase;
   PaperToast saveToast;
   CoreList coreListDart;
+  CoreMenu mnuMain;
   PaperButton btnEdit;
   PaperButton btnDelete;
 
@@ -50,20 +53,29 @@ class MainApp extends PolymerElement {
     } else {
       selectedPage = PAGE_LIST;
     }
-
+ 
   }
-
-  void inputHandler(html.Event e) {
-      var inp = ($['zip'] as PaperInput);
-      // very simple check - you can check what you want of courxe
-      if(inp.value.length < 5) {
-        // any text is treated as validation error
-        inp.jsElement.callMethod('setCustomValidity', ["Give me more!"]);
-      } else {
-        // empty message text is interpreted as valid input
-        inp.jsElement.callMethod('setCustomValidity', [""]);
-      }
+  
+  bool inputIsValid() {
+    bool result = true;
+    
+    return result;
   }
+  
+//  void inputValidator(html.Event e) {
+//      var inputDecorator = ($['decorator-email'] as PaperInputDecorator);
+//      var input = ($['inp-email'] as PaperInput);
+//      var inp = ($['zip'] as PaperInput);
+//      inputDecorator.isInvalid = false;
+//      inputDecorator.validate();
+//      if(inp.value.length < 5) {
+//        // any text is treated as validation error
+//        inp.jsElement.callMethod('setCustomValidity', ["Give me more!"]);
+//      } else {
+//        // empty message text is interpreted as valid input
+//        inp.jsElement.callMethod('setCustomValidity', [""]);
+//      }
+//  }
   
   void editContact() {
     if (selection == null) {
@@ -107,19 +119,10 @@ class MainApp extends PolymerElement {
       return;
     }
     
-    var saveData = {
-      'company': contactData.company, 
-      'firstName': contactData.firstName, 
-      'lastName': contactData.lastName,    
-      'address1': contactData.address1, 
-      'address2': contactData.address2, 
-      'city': contactData.city,   
-      'state': contactData.state, 
-      'zip': contactData.zip, 
-      'telephone': contactData.telephone,
-      'email': contactData.email, 
-      'mobile': contactData.mobile
-    };
+    if (!inputIsValid()) {
+      showMessage("Please correct input");
+      return;
+    }
     
     Firebase saveRef;
     if (contactData.key != null && !contactData.key.isEmpty) {
@@ -132,11 +135,13 @@ class MainApp extends PolymerElement {
     } else {
       saveRef = firebase.child("contacts");
       Firebase newPostRef = saveRef.push();    
-      newPostRef.set(saveData).then((value) {
+      newPostRef.set(contactData.toJSON()).then((value) {
         String postId = newPostRef.key;
         if (postId != null) {
           contactData.key = postId;
         }
+        contactData.index = addIndex;
+        data.insert(addIndex++, contactData);
         showMessage("Contact was saved");  
       }).catchError((error) {
         showMessage("Error saving contact: " + error.toString());          
@@ -199,6 +204,7 @@ class MainApp extends PolymerElement {
   ready() {
     super.ready();
     data = new ObservableList();
+    mnuMain = shadowRoot.querySelector("#mnu-main");
     btnEdit = shadowRoot.querySelector("#btn-edit");
     //btnEdit.disabled = true;
     btnDelete = shadowRoot.querySelector("#btn-delete");
