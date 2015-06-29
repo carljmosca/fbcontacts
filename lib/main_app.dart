@@ -2,11 +2,10 @@
 // is governed by a BSD-style license that can be found in the LICENSE file.
 
 import 'dart:html' as html;
+import 'dart:async';
 
 import 'package:polymer/polymer.dart';
 import 'package:firebase/firebase.dart';
-import 'package:paper_elements/paper_input.dart';
-import 'package:paper_elements/paper_input_decorator.dart';
 import 'package:paper_elements/paper_button.dart';
 import 'package:core_elements/core_menu.dart';
 import 'package:core_elements/core_item.dart';
@@ -62,26 +61,20 @@ class MainApp extends PolymerElement {
     return result;
   }
   
-//  void inputValidator(html.Event e) {
-//      var inputDecorator = ($['decorator-email'] as PaperInputDecorator);
-//      var input = ($['inp-email'] as PaperInput);
-//      var inp = ($['zip'] as PaperInput);
-//      inputDecorator.isInvalid = false;
-//      inputDecorator.validate();
-//      if(inp.value.length < 5) {
-//        // any text is treated as validation error
-//        inp.jsElement.callMethod('setCustomValidity', ["Give me more!"]);
-//      } else {
-//        // empty message text is interpreted as valid input
-//        inp.jsElement.callMethod('setCustomValidity', [""]);
-//      }
-//  }
-  
   void editContact() {
     if (selection == null) {
       return;
     }
+    populateContactData().then((s) {
+      selectedPage = PAGE_DETAILS;      
+    });
+
+  }
+  
+  Future<String> populateContactData() {
+    var completer = new Completer();
     Contact c = selection as Contact;
+    
     contactData.key = c.key;
     contactData.company = c.company;
     contactData.firstName = c.firstName;
@@ -94,8 +87,8 @@ class MainApp extends PolymerElement {
     contactData.email = c.email;
     contactData.telephone = c.telephone;
     contactData.mobile = c.mobile;
-    selectedPage = PAGE_DETAILS;
-
+    completer.complete("");
+    return completer.future;
   }
   
   void deleteContact(html.Event e, var detail, html.Element target) {
@@ -215,10 +208,14 @@ class MainApp extends PolymerElement {
       resetListButtons();
     });
     firebase = new Firebase(FB_BASE_ADDRESS);
-    firebase.authWithOAuthPopup('google').then((authResponse) {  
-      uid = authResponse['auth']['uid'];
+    if (firebase.getAuth() == null) {
+      firebase.authWithOAuthPopup('google').then((authResponse) {  
+        uid = authResponse['auth']['uid'];
+        afterAuthentication();
+      });    
+    } else {
       afterAuthentication();
-    });    
+    }
     selection = Contact.empty();
   }  
   
