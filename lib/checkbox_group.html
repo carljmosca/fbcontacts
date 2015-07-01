@@ -1,0 +1,12 @@
+
+<link rel="import" href="../../packages/paper_elements/paper_checkbox.html">
+<polymer-element name="checkbox-group">
+  <script type="application/dart" src="checkbox_group.dart"></script>
+  <template>
+    <template repeat="{{ c in checkboxes }}">
+      <paper-checkbox label="{{ c.label}}"></paper-checkbox>
+    </template>
+  </template>
+  
+</polymer-element>
+

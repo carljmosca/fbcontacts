@@ -17,6 +17,7 @@
 <link rel="import" href="../../packages/core_elements/core_list_dart.html">
 <link rel="import" href="../../packages/core_elements/core_item.html">
 <link rel="import" href="../../packages/paper_elements/paper_toast.html">
+<link rel="import" href="checkbox_group.html">
 
 
 <polymer-element name="main-app">
@@ -131,6 +132,8 @@
               <paper-input label="City"  value="{{contactData.city}}"></paper-input>
               <paper-input label="State"  value="{{contactData.state}}"></paper-input>
               <paper-input label="Zip" value="{{contactData.zip}}"></paper-input>
+              <p></p>
+              <checkbox-group></checkbox-group>
               <p>
                 <paper-button raised on-click="{{saveContact}}">Save</paper-button>
                 <paper-toast id="save-toast" text=""></paper-toast>
